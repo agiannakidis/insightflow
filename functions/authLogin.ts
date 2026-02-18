@@ -60,14 +60,9 @@ Deno.serve(async (req) => {
       const ip = req.headers.get("x-forwarded-for") || "unknown";
       const userAgent = req.headers.get("user-agent") || "";
 
-      // Find user by username or email
-      const users = await base44.asServiceRole.entities.User.filter({ username });
+      // Find user by username
+      const users = await base44.asServiceRole.entities.AppUser.filter({ username });
       let user = users[0];
-      if (!user) {
-        // Try by email
-        const byEmail = await base44.asServiceRole.entities.User.filter({ email: username });
-        user = byEmail[0];
-      }
       
       if (!user || !user.is_active) {
         return Response.json({ error: "Invalid credentials" }, { status: 401 });
