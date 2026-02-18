@@ -69,10 +69,22 @@ export default function Layout({ children, currentPageName }) {
           })}
         </nav>
 
-        {/* Version */}
-        <div className="px-3.5 py-3 border-t border-zinc-800/60">
-          <div className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center">
-            <span className="text-[9px] text-zinc-500 font-mono">v1</span>
+        {/* Logout + Version */}
+        <div className="px-1.5 py-3 border-t border-zinc-800/60 space-y-1">
+          <button
+            onClick={handleLogout}
+            title="Logout"
+            className="w-full flex items-center gap-3 px-2 py-2.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+          >
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+            <span className="text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Logout</span>
+          </button>
+          <div className="flex items-center px-2">
+            <div className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center">
+              <span className="text-[9px] text-zinc-500 font-mono">v1</span>
+            </div>
           </div>
         </div>
       </aside>
