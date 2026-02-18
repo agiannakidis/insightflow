@@ -332,15 +332,17 @@ Deno.serve(async (req) => {
       }
 
       case "anomalyDetection": {
-        const { from: _fAD, to: _tAD } = params;
+        const { from: _fAD, to: _tAD, operator_name: _opAD } = params;
         const from = sanitizeTs(_fAD), to = sanitizeTs(_tAD);
+        const adConditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
+        if (_opAD) adConditions.push(`operator_name ILIKE '%${_opAD.replace(/'/g, "\\'")}%'`);
         sql = `
           SELECT 
             toStartOfInterval(ts, INTERVAL 5 MINUTE) AS bucket,
             countIf(lower(level) = 'error') AS error_count,
             count() AS total_count
           FROM observability.logs
-          WHERE ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)
+          WHERE ${adConditions.join(' AND ')}
           GROUP BY bucket
           ORDER BY bucket ASC
           FORMAT JSON
