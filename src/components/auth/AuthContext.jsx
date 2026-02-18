@@ -1,0 +1,49 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('obs_token');
+    if (token) {
+      base44.functions.invoke('authLogin', { action: 'validate', token })
+        .then(res => {
+          if (res.data?.valid) setUser(res.data.user);
+          else localStorage.removeItem('obs_token');
+        })
+        .catch(() => localStorage.removeItem('obs_token'))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const login = async (username, password) => {
+    const res = await base44.functions.invoke('authLogin', { action: 'login', username, password });
+    if (res.data?.success) {
+      localStorage.setItem('obs_token', res.data.token);
+      setUser(res.data.user);
+      return { success: true };
+    }
+    return { success: false, error: res.data?.error || 'Login failed' };
+  };
+
+  const logout = async () => {
+    const token = localStorage.getItem('obs_token');
+    if (token) await base44.functions.invoke('authLogin', { action: 'logout', token });
+    localStorage.removeItem('obs_token');
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout, loading, token: localStorage.getItem('obs_token') }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => useContext(AuthContext);
