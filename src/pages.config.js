@@ -47,8 +47,14 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Overview from './pages/Overview';
 
-export const pagesConfig = {
-	Pages: {}
+
+export const PAGES = {
+    "Overview": Overview,
 }
 
+export const pagesConfig = {
+    mainPage: "Overview",
+    Pages: PAGES,
+};
