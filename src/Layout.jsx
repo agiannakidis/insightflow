@@ -24,6 +24,13 @@ const NAV_ITEMS = [
   )},
 ];
 
+function handleLogout() {
+  const token = localStorage.getItem('obs_token');
+  if (token) base44.functions.invoke('authLogin', { action: 'logout', token }).catch(() => {});
+  localStorage.removeItem('obs_token');
+  window.location.reload();
+}
+
 export default function Layout({ children, currentPageName }) {
   return (
     <div className="flex h-screen bg-[#0a0a0f] overflow-hidden">
