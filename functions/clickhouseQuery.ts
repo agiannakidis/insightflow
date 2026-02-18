@@ -95,8 +95,9 @@ Deno.serve(async (req) => {
 
     switch (type) {
       case "logsVolume": {
-        const { from, to, service, level, interval = "5 MINUTE" } = params;
-        const conditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
+        const { from: _from, to: _to, service, level, interval = "5 MINUTE" } = params;
+            const from = sanitizeTs(_from), to = sanitizeTs(_to);
+            const conditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
         if (service) conditions.push(`service IN (${service.map(s => `'${s}'`).join(",")})`);
         if (level) conditions.push(`level IN (${level.map(l => `'${l}'`).join(",")})`);
         sql = `
