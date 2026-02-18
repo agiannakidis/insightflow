@@ -163,7 +163,7 @@ export default function GlobalFilterBar({ page = 'logs' }) {
           placeholder="Round ID"
           className="bg-zinc-900 border border-zinc-700/60 text-zinc-300 text-xs placeholder-zinc-600 rounded-md px-3 py-1.5 w-28 focus:outline-none focus:border-violet-500 transition-colors"
         />
-        {(page === 'traces' || page === 'correlation') && (
+        {(page === 'traces' || page === 'correlation' || page === 'overview' || page === 'logs') && (
           <input
             value={filters.operator_name || ''} onChange={e => updateFilter('operator_name', e.target.value)}
             placeholder="Operator"
