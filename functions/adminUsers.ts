@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
     const ip = req.headers.get("x-forwarded-for") || "unknown";
 
     if (action === "listUsers") {
-      const allUsers = await base44.asServiceRole.entities.User.list();
+      const allUsers = await base44.asServiceRole.entities.AppUser.list();
       return Response.json({ users: allUsers.map(u => ({
         id: u.id, username: u.username, email: u.email,
         role: u.role, is_active: u.is_active,
