@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
     if (action === "resetPassword") {
       const { userId, newPassword } = body;
       const hash = await hashPassword(newPassword);
-      await base44.asServiceRole.entities.User.update(userId, { password_hash: hash, failed_login_attempts: 0, locked_until: null });
+      await base44.asServiceRole.entities.AppUser.update(userId, { password_hash: hash, failed_login_attempts: 0, locked_until: null });
       await base44.asServiceRole.entities.AuditLog.create({
         actor_id: sessionUser.id, actor_email: sessionUser.email || sessionUser.username,
         action: 'reset_password', target_user_id: userId, ip
