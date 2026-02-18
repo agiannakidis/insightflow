@@ -119,11 +119,11 @@ export default function LoginPage() {
             <button onClick={() => { setSetupMode(false); setError(''); }} className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
               ← Back to sign in
             </button>
-          ) : (
+          ) : needsSetup === true ? (
             <button onClick={() => { setSetupMode(true); setError(''); setSetupSuccess(false); }} className="text-xs text-zinc-500 hover:text-zinc-400 transition-colors">
               First time? Set up admin account
             </button>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
