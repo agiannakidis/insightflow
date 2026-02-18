@@ -7,8 +7,8 @@ import GlobalFilterBar from '../components/filters/GlobalFilterBar';
 import MetricCard from '../components/overview/MetricCard';
 import LogsVolumeChart from '../components/overview/LogsVolumeChart';
 import TracesVolumeChart from '../components/overview/TracesVolumeChart';
-import AnomalyChart from '../components/overview/AnomalyChart';
-import ErrorRateTable from '../components/overview/ErrorRateTable';
+import AnomalyChart from '../components/overview/AnomalyChart.jsx';
+import ErrorRateTable from '../components/overview/ErrorRateTable.jsx';
 import LatencyTable from '../components/overview/LatencyTable';
 
 function OverviewInner() {
