@@ -50,14 +50,29 @@ async function runQuery(sql, params = {}) {
   return { ...data, queryDuration };
 }
 
+async function validateToken(base44, token) {
+  if (!token) return null;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(token);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const tokenHash = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+  const sessions = await base44.asServiceRole.entities.Session.filter({ session_token_hash: tokenHash });
+  const session = sessions[0];
+  if (!session || session.is_revoked || new Date(session.expires_at) < new Date()) return null;
+  const users = await base44.asServiceRole.entities.AppUser.filter({ id: session.user_id });
+  const user = users[0];
+  if (!user || !user.is_active) return null;
+  return user;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
-
     const body = await req.json();
-    const { type, params = {} } = body;
+    const { type, params = {}, token } = body;
+
+    const user = await validateToken(base44, token);
+    if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
     let sql = "";
 
