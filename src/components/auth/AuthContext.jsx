@@ -7,15 +7,20 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const forceLogout = () => {
+    localStorage.removeItem('obs_token');
+    setUser(null);
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('obs_token');
     if (token) {
       base44.functions.invoke('authLogin', { action: 'validate', token })
         .then(res => {
           if (res.data?.valid) setUser(res.data.user);
-          else localStorage.removeItem('obs_token');
+          else forceLogout();
         })
-        .catch(() => localStorage.removeItem('obs_token'))
+        .catch(() => forceLogout())
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
