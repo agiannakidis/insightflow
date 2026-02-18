@@ -100,16 +100,14 @@ function OverviewInner() {
 export default function Overview() {
   return (
     <AuthProvider>
-      <AuthGate>
-        <FilterProvider>
-          <OverviewInner />
-        </FilterProvider>
-      </AuthGate>
+      <FilterProvider>
+        <OverviewContent />
+      </FilterProvider>
     </AuthProvider>
   );
 }
 
-function AuthGate({ children }) {
+function OverviewContent() {
   const { user, loading } = useAuth();
   if (loading) return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
@@ -117,5 +115,5 @@ function AuthGate({ children }) {
     </div>
   );
   if (!user) return <LoginPage />;
-  return children;
+  return <OverviewInner />;
 }
