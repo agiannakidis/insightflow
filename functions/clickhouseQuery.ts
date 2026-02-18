@@ -328,7 +328,8 @@ Deno.serve(async (req) => {
       }
 
       case "anomalyDetection": {
-        const { from, to } = params;
+        const { from: _fAD, to: _tAD } = params;
+        const from = sanitizeTs(_fAD), to = sanitizeTs(_tAD);
         sql = `
           SELECT 
             toStartOfInterval(ts, INTERVAL 5 MINUTE) AS bucket,
