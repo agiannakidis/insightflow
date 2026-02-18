@@ -12,16 +12,16 @@ import ErrorRateTable from '../components/overview/ErrorRateTable.jsx';
 import LatencyTable from '../components/overview/LatencyTable';
 
 function OverviewInner() {
-  const { from, to } = useFilters();
+  const { from, to, filters } = useFilters();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      apiCall('clickhouseQuery', { type: 'logsCount', params: { from, to } }),
-      apiCall('clickhouseQuery', { type: 'tracesCount', params: { from, to } }),
-      apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to } }),
+      apiCall('clickhouseQuery', { type: 'logsCount', params: { from, to, operator_name: filters.operator_name } }),
+      apiCall('clickhouseQuery', { type: 'tracesCount', params: { from, to, operator_name: filters.operator_name } }),
+      apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to, operator_name: filters.operator_name } }),
     ]).then(([logsRes, tracesRes, errorsRes]) => {
       const totalLogs = logsRes.data?.data?.[0]?.cnt;
       const totalTraces = tracesRes.data?.data?.[0]?.cnt;
@@ -32,7 +32,7 @@ function OverviewInner() {
       setMetrics({ totalLogs, totalTraces, errorRate, errorData });
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, [from, to]);
+  }, [from, to, filters.operator_name]);
 
   const fmt = (n) => {
     if (n == null) return '—';
