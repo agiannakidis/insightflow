@@ -9,7 +9,7 @@ export default function ErrorRateTable() {
 
   useEffect(() => {
     setLoading(true);
-    base44.functions.invoke('clickhouseQuery', { type: 'errorRateByService', params: { from, to } })
+    apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to } })
       .then(res => { setData(res.data?.data || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, [from, to]);

@@ -11,7 +11,7 @@ export default function AnomalyChart() {
 
   useEffect(() => {
     setLoading(true);
-    base44.functions.invoke('clickhouseQuery', {
+    apiCall('clickhouseQuery', {
       type: 'anomalyDetection',
       params: { from, to }
     }).then(res => {

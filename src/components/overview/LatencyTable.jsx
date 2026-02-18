@@ -16,7 +16,7 @@ export default function LatencyTable() {
 
   useEffect(() => {
     setLoading(true);
-    base44.functions.invoke('clickhouseQuery', { type: 'latencyPercentiles', params: { from, to } })
+    apiCall('clickhouseQuery', { type: 'latencyPercentiles', params: { from, to } })
       .then(res => { setData(res.data?.data || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, [from, to]);

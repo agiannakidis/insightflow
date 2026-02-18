@@ -13,7 +13,7 @@ export default function TracesVolumeChart() {
 
   useEffect(() => {
     setLoading(true);
-    base44.functions.invoke('clickhouseQuery', {
+    apiCall('clickhouseQuery', {
       type: 'tracesVolume',
       params: { from, to, interval, service: filters.service?.length ? filters.service : undefined }
     }).then(res => {

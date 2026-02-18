@@ -35,7 +35,7 @@ export default function LogsVolumeChart() {
 
   useEffect(() => {
     setLoading(true);
-    base44.functions.invoke('clickhouseQuery', {
+    apiCall('clickhouseQuery', {
       type: 'logsVolume',
       params: { from, to, interval, service: filters.service?.length ? filters.service : undefined }
     }).then(res => {
