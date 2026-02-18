@@ -150,13 +150,13 @@ Deno.serve(async (req) => {
     }
 
     if (action === "checkSetup") {
-      const existing = await base44.asServiceRole.entities.User.list('id', 1);
+      const existing = await base44.asServiceRole.entities.AppUser.list('id', 1);
       return Response.json({ needsSetup: existing.length === 0 });
     }
 
     if (action === "setup") {
       // Create first admin user - only allowed if no users exist yet
-      const existing = await base44.asServiceRole.entities.User.list('id', 1);
+      const existing = await base44.asServiceRole.entities.AppUser.list('id', 1);
       if (existing.length > 0) {
         return Response.json({ error: "Setup already complete. Users already exist." }, { status: 403 });
       }
@@ -165,7 +165,7 @@ Deno.serve(async (req) => {
         return Response.json({ error: "Username and password required" }, { status: 400 });
       }
       const hash = await hashPassword(password);
-      const user = await base44.asServiceRole.entities.User.create({
+      await base44.asServiceRole.entities.AppUser.create({
         username,
         password_hash: hash,
         role: 'admin',
