@@ -12,6 +12,13 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  // Listen for global unauthorized events
+  useEffect(() => {
+    const handler = () => forceLogout();
+    window.addEventListener('obs:unauthorized', handler);
+    return () => window.removeEventListener('obs:unauthorized', handler);
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem('obs_token');
     if (token) {
