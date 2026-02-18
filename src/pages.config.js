@@ -50,12 +50,14 @@
 import Overview from './pages/Overview';
 import Logs from './pages/Logs';
 import Traces from './pages/Traces';
+import Correlation from './pages/Correlation';
 
 
 export const PAGES = {
     "Overview": Overview,
     "Logs": Logs,
     "Traces": Traces,
+    "Correlation": Correlation,
 }
 
 export const pagesConfig = {
