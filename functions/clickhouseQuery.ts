@@ -167,7 +167,8 @@ Deno.serve(async (req) => {
       }
 
       case "logsList": {
-        const { from, to, service, level, trace_id, span_id, round_id, container_name, target, image, search, cursor, limit = 50, excludeFilters = {} } = params;
+        const { from: _fLL, to: _tLL, service, level, trace_id, span_id, round_id, container_name, target, image, search, cursor, limit = 50, excludeFilters = {} } = params;
+        const from = sanitizeTs(_fLL), to = sanitizeTs(_tLL);
         const conditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
         if (service?.length) conditions.push(`service ${excludeFilters.service ? 'NOT ' : ''}IN (${service.map(s => `'${s}'`).join(",")})`);
         if (level?.length) conditions.push(`level ${excludeFilters.level ? 'NOT ' : ''}IN (${level.map(l => `'${l}'`).join(",")})`);
