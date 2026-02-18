@@ -47,22 +47,22 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Overview from './pages/Overview';
-import Logs from './pages/Logs';
-import Traces from './pages/Traces';
-import Correlation from './pages/Correlation';
-import SavedViews from './pages/SavedViews';
 import Admin from './pages/Admin';
+import Correlation from './pages/Correlation';
+import Logs from './pages/Logs';
+import Overview from './pages/Overview';
+import SavedViews from './pages/SavedViews';
+import Traces from './pages/Traces';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Overview": Overview,
-    "Logs": Logs,
-    "Traces": Traces,
-    "Correlation": Correlation,
-    "SavedViews": SavedViews,
     "Admin": Admin,
+    "Correlation": Correlation,
+    "Logs": Logs,
+    "Overview": Overview,
+    "SavedViews": SavedViews,
+    "Traces": Traces,
 }
 
 export const pagesConfig = {

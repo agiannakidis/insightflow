@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useFilters } from './FilterContext';
-import { base44 } from '@/api/base44Client';
+import { apiCall } from '../auth/apiCall';
 
 const TIME_PRESETS = ['15m', '1h', '6h', '24h', '7d', '30d'];
 

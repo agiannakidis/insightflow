@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { apiCall } from '../components/auth/apiCall';
 import { AuthProvider, useAuth } from '../components/auth/AuthContext';
 import LoginPage from '../components/auth/LoginPage';
 import { FilterProvider, useFilters } from '../components/filters/FilterContext';
