@@ -227,7 +227,8 @@ Deno.serve(async (req) => {
       }
 
       case "traceDetail": {
-        const { trace_id, from, to } = params;
+        const { trace_id, from: _fTD, to: _tTD } = params;
+        const from = sanitizeTs(_fTD), to = sanitizeTs(_tTD);
         sql = `
           SELECT Timestamp, TraceId, SpanId, ParentSpanId, TraceState,
                  SpanName, SpanKind, ServiceName,
