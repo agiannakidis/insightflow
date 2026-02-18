@@ -12,6 +12,11 @@ if (CLICKHOUSE_HOST && !/:\d+$/.test(new URL(CLICKHOUSE_HOST).host)) {
 const CLICKHOUSE_USER = Deno.env.get("CLICKHOUSE_USER");
 const CLICKHOUSE_PASSWORD = Deno.env.get("CLICKHOUSE_PASSWORD");
 
+function sanitizeTs(ts) {
+  if (!ts) return ts;
+  return String(ts).replace('T', ' ').replace('Z', '').split('+')[0];
+}
+
 async function runQuery(sql, params = {}) {
   const startTime = Date.now();
   
