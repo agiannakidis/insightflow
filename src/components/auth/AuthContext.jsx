@@ -44,6 +44,22 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  // Global 401 interceptor - any function returning 401 forces re-login
+  useEffect(() => {
+    if (!user) return;
+    const originalInvoke = base44.functions.invoke.bind(base44.functions);
+    base44.functions.invoke = async (...args) => {
+      const res = await originalInvoke(...args);
+      if (res?.data?.error === 'Unauthorized' || res?.status === 401) {
+        forceLogout();
+      }
+      return res;
+    };
+    return () => {
+      base44.functions.invoke = originalInvoke;
+    };
+  }, [user]);
+
   return (
     <AuthContext.Provider value={{ user, login, logout, loading, token: localStorage.getItem('obs_token') }}>
       {children}
