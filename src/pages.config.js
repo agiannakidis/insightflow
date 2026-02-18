@@ -49,11 +49,13 @@
  */
 import Overview from './pages/Overview';
 import Logs from './pages/Logs';
+import Traces from './pages/Traces';
 
 
 export const PAGES = {
     "Overview": Overview,
     "Logs": Logs,
+    "Traces": Traces,
 }
 
 export const pagesConfig = {
