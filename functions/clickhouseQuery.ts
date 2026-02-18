@@ -288,7 +288,7 @@ Deno.serve(async (req) => {
       }
 
       case "logsCount": {
-        const { from: _fLC, to: _tLC, service, level, trace_id, span_id, round_id, container_name, target, image, search } = params;
+        const { from: _fLC, to: _tLC, service, level, trace_id, span_id, round_id, container_name, target, image, search, operator_name: _opLC } = params;
         const from = sanitizeTs(_fLC), to = sanitizeTs(_tLC);
         const conditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
         if (service?.length) conditions.push(`service IN (${service.map(s => `'${s}'`).join(",")})`);
