@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       const sessions = await base44.asServiceRole.entities.Session.filter({ session_token_hash: tokenHash });
       const session = sessions[0];
       if (session && !session.is_revoked && new Date(session.expires_at) > new Date()) {
-        const users = await base44.asServiceRole.entities.User.filter({ id: session.user_id });
+        const users = await base44.asServiceRole.entities.AppUser.filter({ id: session.user_id });
         sessionUser = users[0];
       }
     }
