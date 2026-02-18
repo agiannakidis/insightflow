@@ -2,47 +2,45 @@ import React from 'react';
 
 const PAGE_SIZES = [25, 50, 100, 200];
 
-export default function Pagination({ pageSize, onPageSizeChange, onNext, onPrev, hasNext, hasPrev, total, queryDuration, sql }) {
+export default function Pagination({ pageSize, onPageSizeChange, onNext, onPrev, hasNext, hasPrev, total, queryDuration }) {
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-zinc-800/60">
-      <div className="flex items-center gap-3">
-        <span className="text-xs text-zinc-500">Rows per page:</span>
-        <select
-          value={pageSize}
-          onChange={e => onPageSizeChange(parseInt(e.target.value))}
-          className="bg-zinc-900 border border-zinc-700 text-zinc-300 text-xs rounded-md px-2 py-1 focus:outline-none focus:border-violet-500"
-        >
-          {PAGE_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
-        {total != null && (
-          <span className="text-xs text-zinc-500">
-            ~{total.toLocaleString()} results
-          </span>
-        )}
-        {queryDuration && (
-          <span className="text-xs text-zinc-600">{queryDuration}ms</span>
-        )}
+    <div className="px-4 py-2.5 flex items-center gap-4 text-xs text-zinc-500">
+      <div className="flex items-center gap-1.5">
+        <span>Rows:</span>
+        <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-md">
+          {PAGE_SIZES.map(s => (
+            <button
+              key={s}
+              onClick={() => onPageSizeChange(s)}
+              className={`px-2 py-1 transition-colors ${pageSize === s ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="flex items-center gap-1">
+
+      {total != null && (
+        <span className="text-zinc-600">{parseInt(total).toLocaleString()} total</span>
+      )}
+      {queryDuration != null && (
+        <span className="text-zinc-700">{queryDuration}ms</span>
+      )}
+
+      <div className="ml-auto flex items-center gap-1">
         <button
           onClick={onPrev}
           disabled={!hasPrev}
-          className="flex items-center gap-1 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700/60 rounded-md transition-colors"
+          className="px-3 py-1.5 rounded-md bg-zinc-800/60 border border-zinc-700/60 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-zinc-300"
         >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
-          </svg>
-          Prev
+          ← Prev
         </button>
         <button
           onClick={onNext}
           disabled={!hasNext}
-          className="flex items-center gap-1 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700/60 rounded-md transition-colors"
+          className="px-3 py-1.5 rounded-md bg-zinc-800/60 border border-zinc-700/60 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-zinc-300"
         >
-          Next
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
-          </svg>
+          Next →
         </button>
       </div>
     </div>
