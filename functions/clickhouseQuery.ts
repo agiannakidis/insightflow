@@ -129,15 +129,17 @@ Deno.serve(async (req) => {
       }
 
       case "errorRateByService": {
-        const { from: _fERS, to: _tERS } = params;
+        const { from: _fERS, to: _tERS, operator_name: _opERS } = params;
         const from = sanitizeTs(_fERS), to = sanitizeTs(_tERS);
+        const ersConditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
+        if (_opERS) ersConditions.push(`operator_name ILIKE '%${_opERS.replace(/'/g, "\\'")}%'`);
         sql = `
           SELECT service AS ServiceName,
             countIf(lower(level) = 'error') AS errors,
             count() AS total,
             round(countIf(lower(level) = 'error') / count() * 100, 2) AS error_rate
           FROM observability.logs
-          WHERE ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)
+          WHERE ${ersConditions.join(' AND ')}
           GROUP BY service
           ORDER BY error_rate DESC
           LIMIT 20
