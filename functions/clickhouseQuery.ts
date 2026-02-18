@@ -128,7 +128,8 @@ Deno.serve(async (req) => {
       }
 
       case "errorRateByService": {
-        const { from, to } = params;
+        const { from: _fERS, to: _tERS } = params;
+        const from = sanitizeTs(_fERS), to = sanitizeTs(_tERS);
         sql = `
           SELECT ServiceName, 
             countIf(StatusCode = 'STATUS_CODE_ERROR') AS errors,
