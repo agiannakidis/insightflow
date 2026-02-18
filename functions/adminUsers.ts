@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
 
     if (action === "changeRole") {
       const { userId, newRole } = body;
-      await base44.asServiceRole.entities.User.update(userId, { role: newRole });
+      await base44.asServiceRole.entities.AppUser.update(userId, { role: newRole });
       await base44.asServiceRole.entities.AuditLog.create({
         actor_id: sessionUser.id, actor_email: sessionUser.email || sessionUser.username,
         action: 'change_role', target_user_id: userId, details: `New role: ${newRole}`, ip
