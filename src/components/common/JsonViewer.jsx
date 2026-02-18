@@ -1,99 +1,105 @@
 import React, { useState } from 'react';
 
-function JsonNode({ data, depth = 0 }) {
+function JsonNode({ value, depth = 0 }) {
   const [collapsed, setCollapsed] = useState(depth > 2);
 
-  if (data === null) return <span className="text-zinc-500">null</span>;
-  if (typeof data === 'boolean') return <span className="text-amber-400">{data.toString()}</span>;
-  if (typeof data === 'number') return <span className="text-blue-400">{data}</span>;
-  if (typeof data === 'string') {
-    const isLong = data.length > 100;
-    return <span className="text-green-400">"{isLong ? data.slice(0, 100) + '…' : data}"</span>;
-  }
+  if (value === null) return <span className="text-zinc-500">null</span>;
+  if (typeof value === 'boolean') return <span className="text-amber-400">{String(value)}</span>;
+  if (typeof value === 'number') return <span className="text-blue-400">{value}</span>;
+  if (typeof value === 'string') return <span className="text-green-400">"{value}"</span>;
 
-  if (Array.isArray(data)) {
-    if (data.length === 0) return <span className="text-zinc-400">[]</span>;
+  if (Array.isArray(value)) {
+    if (value.length === 0) return <span className="text-zinc-500">[]</span>;
+    if (collapsed) return (
+      <button onClick={() => setCollapsed(false)} className="text-zinc-500 hover:text-zinc-300 text-xs">
+        [{value.length} items…]
+      </button>
+    );
     return (
       <span>
-        <button onClick={() => setCollapsed(!collapsed)} className="text-zinc-400 hover:text-white text-xs">
-          {collapsed ? `▶ [{…} ×${data.length}]` : '▼ ['}
-        </button>
-        {!collapsed && (
-          <>
-            <div className="ml-4">
-              {data.map((item, i) => (
-                <div key={i}>
-                  <JsonNode data={item} depth={depth + 1} />
-                  {i < data.length - 1 && <span className="text-zinc-600">,</span>}
-                </div>
-              ))}
+        <button onClick={() => setCollapsed(true)} className="text-zinc-500 hover:text-zinc-300 text-xs mr-1">[−]</button>
+        <span className="text-zinc-400">[</span>
+        <div style={{ paddingLeft: 16 }}>
+          {value.map((v, i) => (
+            <div key={i} className="text-xs leading-5">
+              <JsonNode value={v} depth={depth + 1} />
+              {i < value.length - 1 && <span className="text-zinc-600">,</span>}
             </div>
-            <span className="text-zinc-400">]</span>
-          </>
-        )}
+          ))}
+        </div>
+        <span className="text-zinc-400">]</span>
       </span>
     );
   }
 
-  if (typeof data === 'object') {
-    const keys = Object.keys(data);
-    if (keys.length === 0) return <span className="text-zinc-400">{'{}'}</span>;
+  if (typeof value === 'object') {
+    const keys = Object.keys(value);
+    if (keys.length === 0) return <span className="text-zinc-500">{'{}'}</span>;
+    if (collapsed) return (
+      <button onClick={() => setCollapsed(false)} className="text-zinc-500 hover:text-zinc-300 text-xs">
+        {`{${keys.length} keys…}`}
+      </button>
+    );
     return (
       <span>
-        <button onClick={() => setCollapsed(!collapsed)} className="text-zinc-400 hover:text-white text-xs">
-          {collapsed ? `▶ {${keys.slice(0, 3).join(', ')}${keys.length > 3 ? '…' : ''}}` : '▼ {'}
-        </button>
-        {!collapsed && (
-          <>
-            <div className="ml-4">
-              {keys.map((key, i) => (
-                <div key={key}>
-                  <span className="text-violet-300">"{key}"</span>
-                  <span className="text-zinc-500">: </span>
-                  <JsonNode data={data[key]} depth={depth + 1} />
-                  {i < keys.length - 1 && <span className="text-zinc-600">,</span>}
-                </div>
-              ))}
+        {depth > 0 && <button onClick={() => setCollapsed(true)} className="text-zinc-500 hover:text-zinc-300 text-xs mr-1">{'{−}'}</button>}
+        <span className="text-zinc-400">{'{'}</span>
+        <div style={{ paddingLeft: 16 }}>
+          {keys.map((k, i) => (
+            <div key={k} className="text-xs leading-5">
+              <span className="text-violet-300">"{k}"</span>
+              <span className="text-zinc-400">: </span>
+              <JsonNode value={value[k]} depth={depth + 1} />
+              {i < keys.length - 1 && <span className="text-zinc-600">,</span>}
             </div>
-            <span className="text-zinc-400">{'}'}</span>
-          </>
-        )}
+          ))}
+        </div>
+        <span className="text-zinc-400">{'}'}</span>
       </span>
     );
   }
 
-  return <span className="text-zinc-300">{String(data)}</span>;
+  return <span className="text-zinc-300">{String(value)}</span>;
 }
 
 export default function JsonViewer({ data, raw }) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const parsed = React.useMemo(() => {
-    if (data) return data;
-    if (!raw) return null;
-    try { return JSON.parse(typeof raw === 'string' ? raw : JSON.stringify(raw)); }
-    catch { return raw; }
-  }, [data, raw]);
+  const [search, setSearch] = useState('');
+  let parsed = data;
+  if (!parsed && raw) {
+    try { parsed = JSON.parse(raw); } catch { parsed = { raw }; }
+  }
 
-  const jsonString = JSON.stringify(parsed, null, 2);
-  const highlighted = searchTerm
-    ? jsonString.split(searchTerm).join(`<mark class="bg-yellow-400/30 text-yellow-300">${searchTerm}</mark>`)
-    : null;
+  if (!parsed) return <div className="text-xs text-zinc-500">No data</div>;
+
+  if (search) {
+    const str = JSON.stringify(parsed, null, 2);
+    const parts = str.split(new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
+    return (
+      <div>
+        <input
+          value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="Search..."
+          className="mb-2 w-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:border-violet-500"
+        />
+        <pre className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-3 text-xs text-zinc-300 overflow-x-auto font-mono leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">
+          {parts.map((p, i) => p.toLowerCase() === search.toLowerCase()
+            ? <mark key={i} className="bg-yellow-400/30 text-yellow-300 rounded">{p}</mark>
+            : p
+          )}
+        </pre>
+      </div>
+    );
+  }
 
   return (
-    <div className="font-mono text-xs">
-      <div className="mb-2">
-        <input
-          value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-          placeholder="Search in JSON..."
-          className="bg-zinc-900 border border-zinc-700 text-zinc-300 placeholder-zinc-600 rounded-md px-3 py-1.5 text-xs w-full focus:outline-none focus:border-violet-500"
-        />
-      </div>
-      <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 overflow-auto max-h-[500px] leading-relaxed">
-        {highlighted ? (
-          <pre className="text-zinc-300" dangerouslySetInnerHTML={{ __html: highlighted }} />
-        ) : (
-          <JsonNode data={parsed} depth={0} />
-        )}
+    <div>
+      <input
+        value={search} onChange={e => setSearch(e.target.value)}
+        placeholder="Search..."
+        className="mb-2 w-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:border-violet-500"
+      />
+      <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-3 text-xs font-mono leading-relaxed overflow-x-auto max-h-96 overflow-y-auto">
+        <JsonNode value={parsed} depth={0} />
       </div>
     </div>
   );
