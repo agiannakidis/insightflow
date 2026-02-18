@@ -7,13 +7,25 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [setupMode, setSetupMode] = useState(false);
+  const [setupSuccess, setSetupSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const result = await login(username, password);
-    if (!result.success) setError(result.error);
+    if (setupMode) {
+      const res = await base44.functions.invoke('authLogin', { action: 'setup', username, password });
+      if (res.data?.success) {
+        setSetupSuccess(true);
+        setSetupMode(false);
+      } else {
+        setError(res.data?.error || 'Setup failed');
+      }
+    } else {
+      const result = await login(username, password);
+      if (!result.success) setError(result.error);
+    }
     setLoading(false);
   };
 
