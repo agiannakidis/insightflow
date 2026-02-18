@@ -4,7 +4,7 @@ import { apiCall } from '../auth/apiCall';
 import { useFilters } from '../filters/FilterContext';
 
 export default function AnomalyChart() {
-  const { from, to } = useFilters();
+  const { from, to, filters } = useFilters();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [avgErrors, setAvgErrors] = useState(0);
@@ -13,7 +13,7 @@ export default function AnomalyChart() {
     setLoading(true);
     apiCall('clickhouseQuery', {
       type: 'anomalyDetection',
-      params: { from, to }
+      params: { from, to, operator_name: filters.operator_name }
     }).then(res => {
       const raw = res.data?.data || [];
       const processed = raw.map(r => ({
