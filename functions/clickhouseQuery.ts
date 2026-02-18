@@ -1,6 +1,14 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-const CLICKHOUSE_HOST = Deno.env.get("CLICKHOUSE_HOST");
+let CLICKHOUSE_HOST = Deno.env.get("CLICKHOUSE_HOST") || "";
+// Ensure host has a protocol; default ClickHouse HTTP port is 8123
+if (CLICKHOUSE_HOST && !CLICKHOUSE_HOST.startsWith("http")) {
+  CLICKHOUSE_HOST = "http://" + CLICKHOUSE_HOST;
+}
+// Ensure host has a port
+if (CLICKHOUSE_HOST && !/:\d+$/.test(new URL(CLICKHOUSE_HOST).host)) {
+  CLICKHOUSE_HOST = CLICKHOUSE_HOST + ":8123";
+}
 const CLICKHOUSE_USER = Deno.env.get("CLICKHOUSE_USER");
 const CLICKHOUSE_PASSWORD = Deno.env.get("CLICKHOUSE_PASSWORD");
 
