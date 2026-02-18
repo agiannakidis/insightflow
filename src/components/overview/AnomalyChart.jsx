@@ -53,7 +53,7 @@ export default function AnomalyChart() {
           <YAxis yAxisId="left" tick={{ fill: '#71717a', fontSize: 10 }} tickLine={false} axisLine={false} />
           <YAxis yAxisId="right" orientation="right" tick={{ fill: '#71717a', fontSize: 10 }} tickLine={false} axisLine={false} unit="%" />
           <Tooltip contentStyle={{ background: '#18181b', border: '1px solid #3f3f46', borderRadius: 8, fontSize: 11, color: '#e4e4e7' }} />
-          {avgErrors > 0 && <ReferenceLine yAxisId="left" y={avgErrors * 2} stroke="#f59e0b" strokeDasharray="4 4" strokeWidth={1} label={{ value: '2× avg', fill: '#f59e0b', fontSize: 9, position: 'right' }} />}
+          {avgErrors > 0 && <ReferenceLine yAxisId="left" y={avgErrors * 2} stroke="#f59e0b" strokeDasharray="4 4" strokeWidth={1} label={{ value: '2x avg', fill: '#f59e0b', fontSize: 9, position: 'right' }} />}
           <Bar yAxisId="left" dataKey="errors" fill="#ef4444" fillOpacity={0.7} radius={[2, 2, 0, 0]} />
           <Line yAxisId="right" type="monotone" dataKey="error_rate" stroke="#f59e0b" strokeWidth={1.5} dot={false} />
         </ComposedChart>

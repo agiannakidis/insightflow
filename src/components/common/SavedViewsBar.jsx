@@ -29,15 +29,8 @@ export default function SavedViewsBar({ page }) {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleExportCSV = () => {
-    const url = getShareableUrl();
-    navigator.clipboard.writeText(url);
-  };
-
   const handleCopyCurl = () => {
-    const curl = `curl -X POST '${window.location.origin}/api/functions/clickhouseQuery' \\
-  -H 'Content-Type: application/json' \\
-  -d '${JSON.stringify({ type: page === 'logs' ? 'logsList' : 'tracesList', params: filters }, null, 2)}'`;
+    const curl = `curl -X POST '${window.location.origin}/api/functions/clickhouseQuery' \\\n  -H 'Content-Type: application/json' \\\n  -d '${JSON.stringify({ type: page === 'logs' ? 'logsList' : 'tracesList', params: filters }, null, 2)}'`;
     navigator.clipboard.writeText(curl);
   };
 
