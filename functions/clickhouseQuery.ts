@@ -334,7 +334,7 @@ Deno.serve(async (req) => {
         sql = `
           SELECT 
             toStartOfInterval(ts, INTERVAL 5 MINUTE) AS bucket,
-            countIf(level = 'error') AS error_count,
+            countIf(lower(level) = 'error') AS error_count,
             count() AS total_count
           FROM observability.logs
           WHERE ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)
