@@ -266,7 +266,8 @@ Deno.serve(async (req) => {
       }
 
       case "filterOptions": {
-        const { field, table, from, to } = params;
+        const { field, table, from: _fFO, to: _tFO } = params;
+        const from = sanitizeTs(_fFO), to = sanitizeTs(_tFO);
         const tableMap = { logs: "observability.logs", traces: "observability.traces" };
         const timeField = table === "traces" ? "Timestamp" : "ts";
         const precision = table === "traces" ? 9 : 3;
