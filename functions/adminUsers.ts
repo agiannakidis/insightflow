@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
 
     if (action === "enableUser") {
       const { userId } = body;
-      await base44.asServiceRole.entities.User.update(userId, { is_active: true });
+      await base44.asServiceRole.entities.AppUser.update(userId, { is_active: true });
       await base44.asServiceRole.entities.AuditLog.create({
         actor_id: sessionUser.id, actor_email: sessionUser.email || sessionUser.username,
         action: 'enable_user', target_user_id: userId, ip
