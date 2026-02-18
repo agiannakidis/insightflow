@@ -247,7 +247,8 @@ Deno.serve(async (req) => {
       }
 
       case "correlatedLogs": {
-        const { trace_id, round_id, from, to, limit = 50 } = params;
+        const { trace_id, round_id, from: _fCL, to: _tCL, limit = 50 } = params;
+        const from = sanitizeTs(_fCL), to = sanitizeTs(_tCL);
         const conditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
         const orConditions = [];
         if (trace_id) orConditions.push(`trace_id = '${trace_id}'`);
