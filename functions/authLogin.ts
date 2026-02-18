@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
       if (!session || session.is_revoked || new Date(session.expires_at) < new Date()) {
         return Response.json({ valid: false });
       }
-      const users = await base44.asServiceRole.entities.User.filter({ id: session.user_id });
+      const users = await base44.asServiceRole.entities.AppUser.filter({ id: session.user_id });
       const user = users[0];
       if (!user || !user.is_active) return Response.json({ valid: false });
       return Response.json({ valid: true, user: { id: user.id, username: user.username, email: user.email, role: user.role } });
