@@ -14,7 +14,8 @@ const CLICKHOUSE_PASSWORD = Deno.env.get("CLICKHOUSE_PASSWORD");
 
 function sanitizeTs(ts) {
   if (!ts) return ts;
-  return String(ts).replace('T', ' ').replace('Z', '').split('+')[0];
+  // Convert ISO 8601 to ClickHouse-compatible datetime: "YYYY-MM-DD HH:MM:SS.mmm"
+  return String(ts).replace('T', ' ').replace(/Z$/, '').split('+')[0];
 }
 
 async function runQuery(sql, params = {}) {
