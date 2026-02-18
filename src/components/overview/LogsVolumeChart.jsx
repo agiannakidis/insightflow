@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { base44 } from '@/api/base44Client';
+import { apiCall } from '../auth/apiCall';
 import { useFilters } from '../filters/FilterContext';
 
 const LEVEL_FILL = {

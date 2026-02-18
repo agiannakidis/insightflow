@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { base44 } from '@/api/base44Client';
+import { apiCall } from '../auth/apiCall';
 import { useFilters } from '../filters/FilterContext';
 
 export default function AnomalyChart() {
