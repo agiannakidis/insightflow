@@ -1,15 +1,15 @@
 import React from 'react';
 
-export default function SkeletonTable({ rows = 10, cols = 6 }) {
+export default function SkeletonTable({ rows = 8, cols = 6 }) {
   return (
-    <div className="space-y-0">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className={`flex gap-4 px-4 py-3 border-b border-zinc-800/50 ${i % 2 === 0 ? 'bg-transparent' : 'bg-zinc-900/20'}`}>
-          {Array.from({ length: cols }).map((_, j) => (
+    <div className="w-full">
+      {Array.from({ length: rows }).map((_, ri) => (
+        <div key={ri} className="flex gap-3 px-4 py-2.5 border-b border-zinc-800/40">
+          {Array.from({ length: cols }).map((_, ci) => (
             <div
-              key={j}
-              className="h-3.5 rounded bg-zinc-800 animate-pulse"
-              style={{ width: `${Math.random() * 60 + 40}px`, animationDelay: `${i * 50}ms` }}
+              key={ci}
+              className="h-3.5 bg-zinc-800 rounded animate-pulse"
+              style={{ width: `${[12, 10, 6, 8, 14, 30][ci % 6]}%`, minWidth: 40 }}
             />
           ))}
         </div>
