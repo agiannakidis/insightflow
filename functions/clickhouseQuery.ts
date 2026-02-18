@@ -195,7 +195,8 @@ Deno.serve(async (req) => {
       }
 
       case "tracesList": {
-        const { from, to, service, trace_id, span_id, round_id, operator_name, status_code, span_kind, span_name, status_message, duration_min, duration_max, cursor, limit = 50 } = params;
+        const { from: _fTL, to: _tTL, service, trace_id, span_id, round_id, operator_name, status_code, span_kind, span_name, status_message, duration_min, duration_max, cursor, limit = 50 } = params;
+        const from = sanitizeTs(_fTL), to = sanitizeTs(_tTL);
         const conditions = [`Timestamp >= toDateTime64('${from}', 9) AND Timestamp <= toDateTime64('${to}', 9)`];
         if (service?.length) conditions.push(`ServiceName IN (${service.map(s => `'${s}'`).join(",")})`);
         if (trace_id) conditions.push(`TraceId = '${trace_id}'`);
