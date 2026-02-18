@@ -149,14 +149,30 @@ Deno.serve(async (req) => {
     }
 
     if (action === "hashPassword") {
-      // Admin only - for creating users
-      const base44User = await base44.auth.me();
-      if (!base44User || base44User.role !== 'admin') {
-        return Response.json({ error: "Forbidden" }, { status: 403 });
-      }
       const { password } = body;
       const hash = await hashPassword(password);
       return Response.json({ hash });
+    }
+
+    if (action === "setup") {
+      // Create first admin user - only allowed if no users exist yet
+      const existing = await base44.asServiceRole.entities.User.list();
+      if (existing.length > 0) {
+        return Response.json({ error: "Setup already complete. Users already exist." }, { status: 403 });
+      }
+      const { username, password } = body;
+      if (!username || !password) {
+        return Response.json({ error: "Username and password required" }, { status: 400 });
+      }
+      const hash = await hashPassword(password);
+      const user = await base44.asServiceRole.entities.User.create({
+        username,
+        password_hash: hash,
+        role: 'admin',
+        is_active: true,
+        failed_login_attempts: 0,
+      });
+      return Response.json({ success: true, message: "Admin user created successfully" });
     }
 
     return Response.json({ error: "Unknown action" }, { status: 400 });
