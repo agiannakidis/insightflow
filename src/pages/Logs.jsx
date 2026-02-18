@@ -4,7 +4,7 @@ import LoginPage from '../components/auth/LoginPage';
 import { FilterProvider } from '../components/filters/FilterContext';
 import GlobalFilterBar from '../components/filters/GlobalFilterBar';
 import LogsTable from '../components/logs/LogsTable';
-import SavedViewsBar from '../components/common/SavedViewsBar';
+import SavedViewsBar from '../components/common/SavedViewsBar.js';
 
 function LogsInner() {
   return (
