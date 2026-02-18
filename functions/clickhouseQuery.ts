@@ -112,7 +112,8 @@ Deno.serve(async (req) => {
       }
 
       case "tracesVolume": {
-        const { from, to, service, interval = "5 MINUTE" } = params;
+        const { from: _from2, to: _to2, service, interval = "5 MINUTE" } = params;
+        const from = sanitizeTs(_from2), to = sanitizeTs(_to2);
         const conditions = [`Timestamp >= toDateTime64('${from}', 9) AND Timestamp <= toDateTime64('${to}', 9)`];
         if (service) conditions.push(`ServiceName IN (${service.map(s => `'${s}'`).join(",")})`);
         sql = `
