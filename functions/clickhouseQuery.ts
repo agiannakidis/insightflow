@@ -26,7 +26,6 @@ async function runQuery(sql, params = {}) {
   }
 
   const url = new URL("/", CLICKHOUSE_HOST);
-  url.searchParams.set("query", finalSql);
   url.searchParams.set("output_format_json_quote_64bit_integers", "0");
 
   const response = await fetch(url.toString(), {
@@ -34,7 +33,6 @@ async function runQuery(sql, params = {}) {
     headers: {
       "X-ClickHouse-User": CLICKHOUSE_USER,
       "X-ClickHouse-Key": CLICKHOUSE_PASSWORD,
-      "Accept": "application/json",
       "Content-Type": "text/plain",
     },
     body: finalSql,
