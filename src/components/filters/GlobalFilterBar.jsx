@@ -55,10 +55,10 @@ export default function GlobalFilterBar({ page = 'logs' }) {
 
   useEffect(() => {
     const fetchOpts = async (field, table) => {
-      try {
-        const res = await base44.functions.invoke('clickhouseQuery', { type: 'filterOptions', params: { field, table, from, to } });
-        return res.data?.data?.map(r => r.val).filter(Boolean) || [];
-      } catch { return []; }
+    try {
+      const res = await apiCall('clickhouseQuery', { type: 'filterOptions', params: { field, table, from, to } });
+      return res.data?.data?.map(r => r.val).filter(Boolean) || [];
+    } catch { return []; }
     };
 
     const loadOpts = async () => {

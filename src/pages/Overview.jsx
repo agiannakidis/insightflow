@@ -18,11 +18,10 @@ function OverviewInner() {
 
   useEffect(() => {
     setLoading(true);
-    const token = localStorage.getItem('obs_token');
     Promise.all([
-      base44.functions.invoke('clickhouseQuery', { type: 'logsCount', params: { from, to }, token }),
-      base44.functions.invoke('clickhouseQuery', { type: 'tracesCount', params: { from, to }, token }),
-      base44.functions.invoke('clickhouseQuery', { type: 'errorRateByService', params: { from, to }, token }),
+      apiCall('clickhouseQuery', { type: 'logsCount', params: { from, to } }),
+      apiCall('clickhouseQuery', { type: 'tracesCount', params: { from, to } }),
+      apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to } }),
     ]).then(([logsRes, tracesRes, errorsRes]) => {
       const totalLogs = logsRes.data?.data?.[0]?.cnt;
       const totalTraces = tracesRes.data?.data?.[0]?.cnt;

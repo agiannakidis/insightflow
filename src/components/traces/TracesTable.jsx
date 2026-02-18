@@ -62,8 +62,8 @@ export default function TracesTable({ compact = false, onSelectTrace, selectedTr
       };
 
       const [tracesRes, countRes] = await Promise.all([
-        base44.functions.invoke('clickhouseQuery', { type: 'tracesList', params }),
-        cur ? Promise.resolve(null) : base44.functions.invoke('clickhouseQuery', { type: 'tracesCount', params }),
+        apiCall('clickhouseQuery', { type: 'tracesList', params }),
+        cur ? Promise.resolve(null) : apiCall('clickhouseQuery', { type: 'tracesCount', params }),
       ]);
 
       setRows(tracesRes.data?.data || []);
