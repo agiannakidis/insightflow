@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
+import { base44 } from '@/api/base44Client';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -19,6 +20,8 @@ export default function LoginPage() {
       if (res.data?.success) {
         setSetupSuccess(true);
         setSetupMode(false);
+        setUsername('');
+        setPassword('');
       } else {
         setError(res.data?.error || 'Setup failed');
       }
@@ -40,12 +43,23 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">Observability</h1>
-          <p className="text-sm text-zinc-500 mt-1">Sign in to your workspace</p>
+          <p className="text-sm text-zinc-500 mt-1">
+            {setupMode ? 'Create your admin account' : 'Sign in to your workspace'}
+          </p>
         </div>
+
+        {setupSuccess && (
+          <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-lg px-3.5 py-2.5 mb-4">
+            <svg className="w-4 h-4 text-green-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-sm text-green-400">Admin account created! You can now sign in.</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Username or Email</label>
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Username</label>
             <input
               type="text"
               value={username}
@@ -87,11 +101,23 @@ export default function LoginPage() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                 </svg>
-                Signing in...
+                {setupMode ? 'Creating account...' : 'Signing in...'}
               </span>
-            ) : 'Sign in'}
+            ) : (setupMode ? 'Create Admin Account' : 'Sign in')}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          {setupMode ? (
+            <button onClick={() => { setSetupMode(false); setError(''); }} className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+              ← Back to sign in
+            </button>
+          ) : (
+            <button onClick={() => { setSetupMode(true); setError(''); setSetupSuccess(false); }} className="text-xs text-zinc-500 hover:text-zinc-400 transition-colors">
+              First time? Set up admin account
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
