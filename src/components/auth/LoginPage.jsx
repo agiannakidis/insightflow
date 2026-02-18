@@ -10,6 +10,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [setupMode, setSetupMode] = useState(false);
   const [setupSuccess, setSetupSuccess] = useState(false);
+  const [needsSetup, setNeedsSetup] = useState(null); // null = loading
+
+  React.useEffect(() => {
+    base44.functions.invoke('authLogin', { action: 'checkSetup' })
+      .then(res => setNeedsSetup(res.data?.needsSetup === true))
+      .catch(() => setNeedsSetup(false));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
