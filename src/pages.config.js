@@ -51,6 +51,7 @@ import Overview from './pages/Overview';
 import Logs from './pages/Logs';
 import Traces from './pages/Traces';
 import Correlation from './pages/Correlation';
+import SavedViews from './pages/SavedViews';
 
 
 export const PAGES = {
@@ -58,6 +59,7 @@ export const PAGES = {
     "Logs": Logs,
     "Traces": Traces,
     "Correlation": Correlation,
+    "SavedViews": SavedViews,
 }
 
 export const pagesConfig = {
