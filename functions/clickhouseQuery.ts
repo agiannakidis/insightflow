@@ -77,6 +77,12 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { type, params = {}, token } = body;
 
+    // Health check ping - no auth required
+    if (type === "ping") {
+      const result = await runQuery("SELECT 1 AS ok FORMAT JSON");
+      return Response.json({ ok: true, clickhouse: result.data?.[0] });
+    }
+
     const user = await validateToken(base44, token);
     if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
