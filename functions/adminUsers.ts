@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
 
     if (action === "disableUser") {
       const { userId } = body;
-      await base44.asServiceRole.entities.User.update(userId, { is_active: false });
+      await base44.asServiceRole.entities.AppUser.update(userId, { is_active: false });
       // Revoke all sessions
       const sessions = await base44.asServiceRole.entities.Session.filter({ user_id: userId });
       for (const s of sessions) {
