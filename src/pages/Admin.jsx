@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { AuthProvider, useAuth } from '../components/auth/AuthContext';
 import LoginPage from '../components/auth/LoginPage';
-
 import { createPageUrl } from '@/utils';
 
 function AdminInner() {

@@ -12,17 +12,16 @@ import ErrorRateTable from '../components/overview/ErrorRateTable.jsx';
 import LatencyTable from '../components/overview/LatencyTable';
 
 function OverviewInner() {
-  const { from, to, filters } = useFilters();
-  const operator_name = filters.operator_name;
+  const { from, to } = useFilters();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      apiCall('clickhouseQuery', { type: 'logsCount', params: { from, to, operator_name } }),
-      apiCall('clickhouseQuery', { type: 'tracesCount', params: { from, to, operator_name } }),
-      apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to, operator_name } }),
+      apiCall('clickhouseQuery', { type: 'logsCount', params: { from, to } }),
+      apiCall('clickhouseQuery', { type: 'tracesCount', params: { from, to } }),
+      apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to } }),
     ]).then(([logsRes, tracesRes, errorsRes]) => {
       const totalLogs = logsRes.data?.data?.[0]?.cnt;
       const totalTraces = tracesRes.data?.data?.[0]?.cnt;
@@ -100,14 +99,16 @@ function OverviewInner() {
 export default function Overview() {
   return (
     <AuthProvider>
-      <FilterProvider>
-        <OverviewContent />
-      </FilterProvider>
+      <AuthGate>
+        <FilterProvider>
+          <OverviewInner />
+        </FilterProvider>
+      </AuthGate>
     </AuthProvider>
   );
 }
 
-function OverviewContent() {
+function AuthGate({ children }) {
   const { user, loading } = useAuth();
   if (loading) return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
@@ -115,5 +116,5 @@ function OverviewContent() {
     </div>
   );
   if (!user) return <LoginPage />;
-  return <OverviewInner />;
+  return children;
 }

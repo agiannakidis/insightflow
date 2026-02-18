@@ -129,17 +129,15 @@ Deno.serve(async (req) => {
       }
 
       case "errorRateByService": {
-        const { from: _fERS, to: _tERS, operator_name: _opERS } = params;
+        const { from: _fERS, to: _tERS } = params;
         const from = sanitizeTs(_fERS), to = sanitizeTs(_tERS);
-        const ersConditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
-        if (_opERS) ersConditions.push(`operator_name ILIKE '%${_opERS.replace(/'/g, "\\'")}%'`);
         sql = `
           SELECT service AS ServiceName,
             countIf(lower(level) = 'error') AS errors,
             count() AS total,
             round(countIf(lower(level) = 'error') / count() * 100, 2) AS error_rate
           FROM observability.logs
-          WHERE ${ersConditions.join(' AND ')}
+          WHERE ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)
           GROUP BY service
           ORDER BY error_rate DESC
           LIMIT 20
@@ -288,7 +286,7 @@ Deno.serve(async (req) => {
       }
 
       case "logsCount": {
-        const { from: _fLC, to: _tLC, service, level, trace_id, span_id, round_id, container_name, target, image, search, operator_name: _opLC } = params;
+        const { from: _fLC, to: _tLC, service, level, trace_id, span_id, round_id, container_name, target, image, search } = params;
         const from = sanitizeTs(_fLC), to = sanitizeTs(_tLC);
         const conditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
         if (service?.length) conditions.push(`service IN (${service.map(s => `'${s}'`).join(",")})`);
@@ -300,7 +298,6 @@ Deno.serve(async (req) => {
         if (target?.length) conditions.push(`target IN (${target.map(t => `'${t}'`).join(",")})`);
         if (image?.length) conditions.push(`image IN (${image.map(i => `'${i}'`).join(",")})`);
         if (search) conditions.push(`toString(event_json) ILIKE '%${search.replace(/'/g, "\\'")}%'`);
-        if (_opLC) conditions.push(`operator_name ILIKE '%${_opLC.replace(/'/g, "\\'")}%'`);
         sql = `
           SELECT count() AS cnt FROM observability.logs
           WHERE ${conditions.join(" AND ")}
@@ -332,17 +329,15 @@ Deno.serve(async (req) => {
       }
 
       case "anomalyDetection": {
-        const { from: _fAD, to: _tAD, operator_name: _opAD } = params;
+        const { from: _fAD, to: _tAD } = params;
         const from = sanitizeTs(_fAD), to = sanitizeTs(_tAD);
-        const adConditions = [`ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)`];
-        if (_opAD) adConditions.push(`operator_name ILIKE '%${_opAD.replace(/'/g, "\\'")}%'`);
         sql = `
           SELECT 
             toStartOfInterval(ts, INTERVAL 5 MINUTE) AS bucket,
             countIf(lower(level) = 'error') AS error_count,
             count() AS total_count
           FROM observability.logs
-          WHERE ${adConditions.join(' AND ')}
+          WHERE ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)
           GROUP BY bucket
           ORDER BY bucket ASC
           FORMAT JSON
