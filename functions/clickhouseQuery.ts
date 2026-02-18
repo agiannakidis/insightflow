@@ -132,13 +132,13 @@ Deno.serve(async (req) => {
         const { from: _fERS, to: _tERS } = params;
         const from = sanitizeTs(_fERS), to = sanitizeTs(_tERS);
         sql = `
-          SELECT ServiceName, 
-            countIf(StatusCode = 'STATUS_CODE_ERROR') AS errors,
+          SELECT service AS ServiceName,
+            countIf(level = 'error') AS errors,
             count() AS total,
-            round(countIf(StatusCode = 'STATUS_CODE_ERROR') / count() * 100, 2) AS error_rate
-          FROM observability.traces
-          WHERE Timestamp >= toDateTime64('${from}', 9) AND Timestamp <= toDateTime64('${to}', 9)
-          GROUP BY ServiceName
+            round(countIf(level = 'error') / count() * 100, 2) AS error_rate
+          FROM observability.logs
+          WHERE ts >= toDateTime64('${from}', 3) AND ts <= toDateTime64('${to}', 3)
+          GROUP BY service
           ORDER BY error_rate DESC
           LIMIT 20
           FORMAT JSON
