@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
       const { username, email, password, role } = body;
       if (!username || !password) return Response.json({ error: "Username and password required" }, { status: 400 });
       const hash = await hashPassword(password);
-      const newUser = await base44.asServiceRole.entities.User.create({
+      const newUser = await base44.asServiceRole.entities.AppUser.create({
         username, email, password_hash: hash,
         role: role || 'viewer', is_active: true,
         failed_login_attempts: 0
