@@ -47,9 +47,9 @@ function generateToken() {
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
     const body = await req.json();
     const { action } = body;
+    const base44 = createClientFromRequest(req);
 
     if (action === "login") {
       const { username, password } = body;
