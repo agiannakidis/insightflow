@@ -300,6 +300,7 @@ Deno.serve(async (req) => {
         if (target?.length) conditions.push(`target IN (${target.map(t => `'${t}'`).join(",")})`);
         if (image?.length) conditions.push(`image IN (${image.map(i => `'${i}'`).join(",")})`);
         if (search) conditions.push(`toString(event_json) ILIKE '%${search.replace(/'/g, "\\'")}%'`);
+        if (_opLC) conditions.push(`operator_name ILIKE '%${_opLC.replace(/'/g, "\\'")}%'`);
         sql = `
           SELECT count() AS cnt FROM observability.logs
           WHERE ${conditions.join(" AND ")}
