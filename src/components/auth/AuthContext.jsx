@@ -20,19 +20,20 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('obs_token');
-    if (token) {
-      base44.functions.invoke('authLogin', { action: 'validate', token })
-        .then(res => {
-          if (res.data?.valid) setUser(res.data.user);
-          else forceLogout();
-        })
-        .catch(() => forceLogout())
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, []);
+            const token = localStorage.getItem('obs_token');
+            if (token) {
+              base44.functions.invoke('authLogin', { action: 'validate', token })
+                .then(res => {
+                  if (res.data?.valid) setUser(res.data.user);
+                  else forceLogout();
+                })
+                .catch(() => forceLogout())
+                .finally(() => setLoading(false));
+            } else {
+              setLoading(false);
+              setUser(null);
+            }
+          }, []);
 
   const login = async (username, password) => {
     const res = await base44.functions.invoke('authLogin', { action: 'login', username, password });
