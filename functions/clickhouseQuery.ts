@@ -146,7 +146,8 @@ Deno.serve(async (req) => {
       }
 
       case "latencyPercentiles": {
-        const { from, to, service } = params;
+        const { from: _fLP, to: _tLP, service } = params;
+        const from = sanitizeTs(_fLP), to = sanitizeTs(_tLP);
         const conditions = [`Timestamp >= toDateTime64('${from}', 9) AND Timestamp <= toDateTime64('${to}', 9)`];
         if (service) conditions.push(`ServiceName IN (${service.map(s => `'${s}'`).join(",")})`);
         sql = `
