@@ -3,13 +3,13 @@ import { apiCall } from '../auth/apiCall';
 import { useFilters } from '../filters/FilterContext';
 
 export default function ErrorRateTable() {
-  const { from, to } = useFilters();
+  const { from, to, filters } = useFilters();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to } })
+    apiCall('clickhouseQuery', { type: 'errorRateByService', params: { from, to, operator_name: filters.operator_name } })
       .then(res => { setData(res.data?.data || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, [from, to]);
