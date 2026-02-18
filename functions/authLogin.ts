@@ -81,12 +81,12 @@ Deno.serve(async (req) => {
           const lockUntil = new Date(Date.now() + 15 * 60 * 1000).toISOString();
           updateData.locked_until = lockUntil;
         }
-        await base44.asServiceRole.entities.User.update(user.id, updateData);
+        await base44.asServiceRole.entities.AppUser.update(user.id, updateData);
         return Response.json({ error: "Invalid credentials" }, { status: 401 });
       }
 
       // Reset failed attempts
-      await base44.asServiceRole.entities.User.update(user.id, {
+      await base44.asServiceRole.entities.AppUser.update(user.id, {
         failed_login_attempts: 0,
         locked_until: null,
         last_login_at: new Date().toISOString()
